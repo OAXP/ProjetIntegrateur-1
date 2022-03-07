@@ -1,0 +1,2 @@
+void setGreen();
+void setRed();
