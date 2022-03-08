@@ -1,14 +1,14 @@
 #define F_CPU 8000000
 #include <avr/io.h>
 #include <util/delay.h>
-#include "led.h"
+#include "Del.h"
 
 int main(){
-    DDRA = 0xFF;
+    Del del(&PORTA, PA0, PA1);
     while(true){
-        setGreen();
+        del.appliquerVertDel();
         _delay_ms(1000);
-        setRed();
+        del.appliquerRougeDel();
         _delay_ms(1000);
     }
 }
