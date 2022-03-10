@@ -1,6 +1,6 @@
-#include "timer0.h"
+#include "timer1.h"
 
-Timer0::Timer0(uint8_t mode, uint16_t duree){
+Timer1::Timer1(uint8_t mode, uint16_t duree){
 
     cli();
 
@@ -27,7 +27,7 @@ Timer0::Timer0(uint8_t mode, uint16_t duree){
 
 }
 
-void Timer0::arreter(){
+void Timer1::arreter(){
 
     cli();
 

@@ -1,11 +1,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-class Timer0 {
+class Timer1 {
 
 public :
 
-    Timer0(uint8_t mode, uint16_t duree);
+    Timer1(uint8_t mode, uint16_t duree);
     void arreter();
 
 };
