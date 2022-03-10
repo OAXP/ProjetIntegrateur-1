@@ -11,9 +11,9 @@ Timer0::Timer0(uint8_t mode, uint16_t duree){
     switch (mode){
         case 0 :    
             TCCR0A |= (1 << WGM00); 
-            TCCR0B |= (1 << WGM02) | (1 << CS12) | (1 << CS10);
+            TCCR0B |= (1 << WGM02) | (1 << CS02) | (1 << CS00);
             break;
-      
+
     }
 
     TIMSK0 |= (1 << OCIE0A);
