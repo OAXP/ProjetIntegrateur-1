@@ -6,7 +6,7 @@
 #ifdef DEBUG
 
 # define DEBUG_PRINT(donnee) {
-rs232 printer;
+Rs232 printer;
 
 void printer::DEBUG_PRINT(donnee){
     printer.transmissionUART(donnee)

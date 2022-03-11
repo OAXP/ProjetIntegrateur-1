@@ -1,8 +1,8 @@
 #include <avr/io.h>
 
-class rs232{
+class Rs232{
     public:
-        rs232();
+        Rs232();
         void transmissionUART(uint8_t donnee);
         
     private:

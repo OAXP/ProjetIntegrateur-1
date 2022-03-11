@@ -2,7 +2,7 @@
 
 class debug {
     public:
-        void print(donnee);
+        void DEBUG_PRINT(donnee);
     private:
         uint8_t donnee;
 };

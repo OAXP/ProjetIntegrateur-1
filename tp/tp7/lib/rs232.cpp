@@ -1,6 +1,6 @@
 #include "rs232.h"
 
-rs232::rs232(){
+Rs232::Rs232(){
     // 2400 bauds. Nous vous donnons la valeur des deux
     // premiers registres pour vous éviter des complications.
     UBRR0H = 0;
@@ -12,7 +12,7 @@ rs232::rs232(){
     UCSR0C = (1 << USBS0) | (1 << UCSZ01) | (1 << UCSZ00);
 }
 
-void rs232::transmissionUART(uint8_t donnee){
+void Rs232::transmissionUART(uint8_t donnee){
     /* Wait for empty transmit buffer */
     while ( !( UCSR0A & (1<<UDRE0)) )
     ;
