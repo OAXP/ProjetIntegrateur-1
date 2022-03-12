@@ -1,3 +1,11 @@
+/**
+ * @file Pwm_T0.h
+ * @author Anas Barbouch (anas.barbouch@polymtl.ca)
+ * @brief Classe Pwm_T0 pour activer le Fast PWM sur le Timer 0.
+ * @date 2022-03-12
+ * 
+ */
+
 #include "Pwm_T0.h"
 
 Pwm_T0::Pwm_T0() {

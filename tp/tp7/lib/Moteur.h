@@ -1,3 +1,12 @@
+/**
+ * @file Moteur.h
+ * @author Anas Barbouch (anas.barbouch@polymtl.ca)
+ * @brief Classe Moteur pour contrôler les roues du robot, elle peut
+ * contrôler la vitesse et la direction du robot.
+ * @date 2022-03-12
+ * 
+ */
+
 #include "avr/io.h"
 #include "Pwm_T0.h"
 

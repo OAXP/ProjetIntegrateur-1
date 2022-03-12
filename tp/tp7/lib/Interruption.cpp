@@ -1,3 +1,12 @@
+/**
+ * @file Interruption.cpp
+ * @author Anas Barbouch (anas.barbouch@polymtl.ca)
+ * @brief Classe Interruption pour initialiser les interruptions externes
+ * INT0, INT1 ou/et INT2.
+ * @date 2022-03-12
+ * 
+ */
+
 #include "Interruption.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
