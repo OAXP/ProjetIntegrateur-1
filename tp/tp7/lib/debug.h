@@ -3,7 +3,9 @@
 
 #define DEBUG // à mettre en commentaire ou non au besoin
 #ifdef DEBUG
-# define DEBUG_PRINT(donnee) Rs232.transmissionUART(donnee);
+# define DEBUG_PRINT(donnee) printer(donnee);
 #else
 # define DEBUG_PRINT(donnee) do {} while (0) // code mort
 #endif
+
+void printer(donnee);
