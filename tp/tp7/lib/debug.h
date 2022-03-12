@@ -8,4 +8,4 @@
 # define DEBUG_PRINT(donnee) do {} while (0) // code mort
 #endif
 
-void printer(donnee);
+void printer(uint8_t donnee);

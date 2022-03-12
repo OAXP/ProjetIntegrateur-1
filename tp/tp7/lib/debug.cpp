@@ -1,7 +1,6 @@
 #include "debug.h"
-#include "rs232.h"
 
-rs232 debugger;
-void printer(donnee){
+Rs232 debugger;
+void printer(uint8_t donnee){
     debugger.transmissionUART(donnee);
 }
