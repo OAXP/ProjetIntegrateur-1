@@ -1,3 +1,13 @@
+
+/**
+ * @file Timer1.cpp
+ * @author Ilias Bakhbukh (ilias.bakhbukh@polymtl.ca)
+ * @brief Classe Timer1 permet de contrôler le timer 1,
+ * elle donne accès aux modes Fast PWM et CTC
+ * @date 2022-03-13
+ * 
+ */
+
 #include "Timer1.h"
 
 Timer1::Timer1(uint8_t modeDeFonctionnement, uint16_t duree){
@@ -36,7 +46,7 @@ void Timer1::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
 
     TCCR1C = 0;
 
-    TIMSK1 |= (1 << OCIE1A);
+    TIMSK1 |= (1 << OCIE1A) | (1 << OCIE1B);
 
     sei();
 }

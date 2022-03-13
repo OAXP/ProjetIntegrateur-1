@@ -1,3 +1,12 @@
+
+/**
+ * @file Timer0.cpp
+ * @author Ilias Bakhbukh (ilias.bakhbukh@polymtl.ca)
+ * @brief Classe Timer0 permet de contrôler le timer 0,
+ * elle donne accès aux modes Fast PWM et CTC
+ * @date 2022-03-13
+ */
+
 #include "Timer0.h"
 
 Timer0::Timer0(uint8_t modeDeFonctionnement, uint16_t duree){
@@ -30,7 +39,7 @@ void Timer0::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
 
     TCCR0B |= (1 << CS01);
 
-    TIMSK0 |= (1 << OCIE0A);
+    TIMSK0 |= (1 << OCIE0A) | (1 << OCIE0B);
 
     sei();
 }

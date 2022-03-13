@@ -62,7 +62,6 @@ int main(){
             del.appliquerRougeDel();
             break;
         }
->>>>>>> 992a2d660e39f7025f0d5348ee205a0963cb81c3
     }
     
 }
