@@ -17,7 +17,7 @@ class Bouton {
                 MAINTENU,
                 RELACHE
             };
-        const uint8_t antirebond = 200;
+        const uint8_t antirebond = 30;
 
         Bouton(uint8_t pin, uint8_t boutonID);
         bool appuiBouton();
@@ -26,5 +26,5 @@ class Bouton {
     private:
         uint8_t _pin;
         uint8_t _boutonID;
-        Etat _etatPresent = ETAT::INIT;
+        Etat _etatPresent = Etat::INIT;
 };

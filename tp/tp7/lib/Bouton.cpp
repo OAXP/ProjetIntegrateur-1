@@ -8,18 +8,18 @@
 
 #include <Bouton.h>
 
-Bouton::Bouton(uint8_t pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
+Bouton::Bouton(uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
 
-    if(pin == &PINA) {
+    if(pin == &PORTA) {
         DDRA |= (0 << _boutonID);
     }
-    else if(pin == &PINB) {
+    else if(pin == &PORTB) {
         DDRB |= (0 << _boutonID);
     }
-    else if(pin == &PINC) {
+    else if(pin == &PORTC) {
         DDRC |= (0 << _boutonID);
     }
-    else if(pin == &PIND) {
+    else if(pin == &PORTD) {
         DDRD |= (0 << _boutonID);
     }
 
