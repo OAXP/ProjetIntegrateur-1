@@ -8,6 +8,9 @@
 #include "debug.h"
 
 Rs232 debugger;
-void printer(uint8_t donnee){
-    debugger.transmissionUART(donnee);
+void printer(char* donnee, uint8_t taille){
+    for (uint8_t i = 0; i < taille; i++)
+    {
+        debugger.transmissionUART(donnee[i]);
+    }
 }

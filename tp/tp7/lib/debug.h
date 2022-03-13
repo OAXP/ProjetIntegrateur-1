@@ -10,9 +10,9 @@
 
 #define DEBUG // à mettre en commentaire ou non au besoin
 #ifdef DEBUG
-# define DEBUG_PRINT(donnee) printer(donnee);
+# define DEBUG_PRINT(donnee, taille) printer(donnee, taille);
 #else
 # define DEBUG_PRINT(donnee) do {} while (0) // code mort
 #endif
 
-void printer(uint8_t donnee);
+void printer(char* donnee, uint8_t taille);
