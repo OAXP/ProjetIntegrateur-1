@@ -6,9 +6,9 @@
  * 
  */
 
-#include <Bouton.h>
+#include "Bouton.h"
 
-Bouton::Bouton(uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
+Bouton::Bouton(volatile uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
 
     if(pin == &PINA) {
         DDRA &= ~(1 << _boutonID);
