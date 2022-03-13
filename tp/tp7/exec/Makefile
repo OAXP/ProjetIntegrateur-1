@@ -128,7 +128,7 @@ OBJDEPS=$(CFILES:.c=.o) \
 # En plus de la commande make qui permet de compiler
 # votre projet, vous pouvez utilisez les commandes
 # make all, make install et make clean
-.PHONY: all install clean 
+.PHONY: all install clean debug
 
 # Make all permet simplement de compiler le projet
 #
@@ -164,6 +164,10 @@ $(TRG): $(OBJDEPS)
 install: $(HEXROMTRG)				
 	$(AVRDUDE) -c $(AVRDUDE_PROGRAMMERID)   \
 	-p $(MCU) -P -e -U flash:w:$(HEXROMTRG)
+
+# Make debug permet de définir DEBUG puis compiler le projet
+debug: CFLAGS += -DDEBUG
+debug: $(HEXROMTRG)
 
 # Make clean permet d'effacer tout les fichiers generes
 # lors de la compilation
