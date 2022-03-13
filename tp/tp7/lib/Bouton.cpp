@@ -37,7 +37,7 @@ bool Bouton::appuiBouton()
   return false;
 }
 
-Bouton::Etat Button::getEtat() {
+Bouton::Etat Bouton::getEtat() {
     
     switch(_etatPresent)
     {
