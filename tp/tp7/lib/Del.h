@@ -1,3 +1,12 @@
+/**
+ * @file Del.h
+ * @author Anas Barbouch (anas.barbouch@polymtl.ca)
+ * @brief Classe Del pour controler la couleur de la lumière
+ * émise par une DEL bicolore.
+ * @date 2022-03-12
+ * 
+ */
+
 #include <avr/io.h>
 
 class Del {

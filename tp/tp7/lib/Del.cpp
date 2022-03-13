@@ -1,3 +1,12 @@
+/**
+ * @file Del.cpp
+ * @author Anas Barbouch (anas.barbouch@polymtl.ca)
+ * @brief Classe Del pour controler la couleur de la lumière
+ * émise par une DEL bicolore.
+ * @date 2022-03-12
+ * 
+ */
+
 #include "Del.h"
 
 Del::Del(volatile uint8_t *port, uint8_t pinDel0, uint8_t pinDel1) : _port(port), _pinDel0(pinDel0), _pinDel1(pinDel1) {
