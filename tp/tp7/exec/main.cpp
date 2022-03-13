@@ -2,13 +2,15 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "Del.h"
+#include "Moteur.h"
 
 int main(){
-    Del del(&PORTA, PA0, PA1);
+
+    Moteur m;
+
+    m.avancer();
+
     while(true){
-        del.appliquerVertDel();
-        _delay_ms(1000);
-        del.appliquerRougeDel();
-        _delay_ms(1000);
+       
     }
 }
