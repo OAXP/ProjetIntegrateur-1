@@ -1,7 +1,7 @@
 /**
  * @file rs232.cpp
  * @author Andy Tran (andy.tran@polymtl.ca)
- * @brief Classe Bouton pour gérer les appuis de bouton.
+ * @brief Classe rs232 pour gerer la communication serie.
  * @date 2022-03-12
  * 
  */

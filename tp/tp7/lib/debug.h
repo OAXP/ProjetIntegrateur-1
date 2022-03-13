@@ -1,7 +1,7 @@
 /**
  * @file debug.h
  * @author Andy Tran (andy.tran@polymtl.ca)
- * @brief Classe Bouton pour gérer les appuis de bouton.
+ * @brief Classe Debug pour afficher la donnee en parametre.
  * @date 2022-03-12
  * 
  */
