@@ -19,12 +19,12 @@ class Bouton {
             };
         const uint8_t antirebond = 30;
 
-        Bouton(uint8_t pin, uint8_t boutonID);
+        Bouton(uint8_t *pin, uint8_t boutonID);
         bool appuiBouton();
         Etat getEtat();
 
     private:
-        uint8_t _pin;
+        uint8_t *_pin;
         uint8_t _boutonID;
         Etat _etatPresent = Etat::INIT;
 };
