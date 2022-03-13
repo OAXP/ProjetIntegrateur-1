@@ -9,14 +9,7 @@ int main(){
 
     while (true)
     {
-        moteur.avancer();
-        _delay_ms(1000);
         moteur.reculer();
-        _delay_ms(1000);
-        moteur.tournerDroite();
-        _delay_ms(1000);
-        moteur.tournerGauche();
-        _delay_ms(1000);
     }
     
 }
