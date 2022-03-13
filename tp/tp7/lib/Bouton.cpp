@@ -10,24 +10,24 @@
 
 Bouton::Bouton(uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
 
-    if(pin == &PORTA) {
-        DDRA |= (0 << _boutonID);
+    if(pin == &PINA) {
+        DDRA &= ~(1 << _boutonID);
     }
-    else if(pin == &PORTB) {
-        DDRB |= (0 << _boutonID);
+    else if(pin == &PINB) {
+        DDRB &= ~(1 << _boutonID);
     }
-    else if(pin == &PORTC) {
-        DDRC |= (0 << _boutonID);
+    else if(pin == &PINC) {
+        DDRC &= ~(1 << _boutonID);
     }
-    else if(pin == &PORTD) {
-        DDRD |= (0 << _boutonID);
+    else if(pin == &PIND) {
+        DDRD &= ~(1 << _boutonID);
     }
 
 }
 
 bool Bouton::appuiBouton()
 {
-  if (_pin & _boutonID)
+  if (*_pin & _boutonID)
   {
     _delay_ms(antirebond);
 
