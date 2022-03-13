@@ -8,7 +8,7 @@
 #include "debug.h"
 
 int main(){
-    Moteur moteur;
+    Moteur moteur; // La classe Moteur teste aussi la classe Pwm_T0 et Pwm_T0 est compatible avec Timer0
     Bouton bouton(&PIND, PD2);
     Del del(&PORTA, PA0, PA1);
 
