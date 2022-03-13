@@ -10,16 +10,16 @@
 
 Bouton::Bouton(volatile uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(boutonID) {
 
-    if(pin == &PINA) {
+    if(*pin == PINA) {
         DDRA &= ~(1 << _boutonID);
     }
-    else if(pin == &PINB) {
+    else if(*pin == PINB) {
         DDRB &= ~(1 << _boutonID);
     }
-    else if(pin == &PINC) {
+    else if(*pin == PINC) {
         DDRC &= ~(1 << _boutonID);
     }
-    else if(pin == &PIND) {
+    else if(*pin == PIND) {
         DDRD &= ~(1 << _boutonID);
     }
 
@@ -27,7 +27,7 @@ Bouton::Bouton(volatile uint8_t *pin, uint8_t boutonID) : _pin(pin), _boutonID(b
 
 bool Bouton::appuiBouton()
 {
-  if (*_pin & _boutonID)
+  if (*_pin & (1 << _boutonID))
   {
     _delay_ms(30); // Antirebond de 30ms
 
