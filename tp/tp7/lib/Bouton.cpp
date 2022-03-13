@@ -29,7 +29,7 @@ bool Bouton::appuiBouton()
 {
   if (*_pin & _boutonID)
   {
-    _delay_ms(antirebond);
+    _delay_ms(30); // Antirebond de 30ms
 
     return true;
   }
