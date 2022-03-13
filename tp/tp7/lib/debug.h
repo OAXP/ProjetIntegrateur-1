@@ -1,3 +1,10 @@
+/**
+ * @file debug.h
+ * @author Andy Tran (andy.tran@polymtl.ca)
+ * @brief Classe Bouton pour gérer les appuis de bouton.
+ * @date 2022-03-12
+ * 
+ */
 #include <avr/io.h>
 #include "rs232.h"
 
