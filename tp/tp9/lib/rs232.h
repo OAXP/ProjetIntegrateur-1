@@ -11,6 +11,7 @@ class Rs232{
     public:
         Rs232();
         void transmissionUART(uint8_t donnee);
+        uint8_t receptionUART();
         
     private:
         uint8_t donnee;

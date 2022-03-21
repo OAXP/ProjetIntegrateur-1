@@ -27,8 +27,8 @@ void Rs232::transmissionUART(uint8_t donnee){
     UDR0 = donnee;
 }
 
-uint8_t Rs232::receiveUART(){
+uint8_t Rs232::receptionUART(){
     /* Wait for data receive */
     while(!(UCSR0A) & (1<<RXC0));
-    ret UDR0;
+    return UDR0;
 }
