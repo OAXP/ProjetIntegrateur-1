@@ -5,6 +5,7 @@
 #define SGO 0x48
 #define SAR 0x09
 #define MAR 0x60
+#define MAR1 0x61
 #define MAV 0x62
 #define MRE 0x63
 #define TRD 0x64
