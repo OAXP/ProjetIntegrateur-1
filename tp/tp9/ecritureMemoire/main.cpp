@@ -9,8 +9,9 @@
 int main() {
     Rs232 rs232;
     Memoire24CXXX memoire;
-    uint16_t addresse = 0x0000;
-    uint16_t binSize = 0x001A; //binsize = 26
+    uint16_t addresse = rs232.receptionUART(); //les 2 premiers octets (0x00)
+    uint8_t binSize = rs232.receptionUART();
+
     for (uint16_t i = 0; i < binSize; i++)
     {
         memoire.ecriture(addresse, rs232.receptionUART());
