@@ -1,0 +1,2 @@
+#define dbt 0x01
+#define att 0x02
