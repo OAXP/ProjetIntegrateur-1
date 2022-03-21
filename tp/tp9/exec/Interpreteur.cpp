@@ -19,7 +19,7 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             _delay_ms(tempsAtt);
             break;
         case DAL:
-            del.appliquerVert();
+            del.appliquerVertDel();
             break;
         case DET:
             del.appliquerEteintDel();
@@ -55,7 +55,7 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             if (boucleActif==false){     //boucleActif false si on atteint pas DBC par FBC
                 boucleActif = true;
                 sauvegarde = addresse;   //addresse a retourner quand on atteint FBC
-                compte = &operande;      //compte = nombre de fois a repeter boucle
+                compte = operande;      //compte = nombre de fois a repeter boucle
             }
             break;
         case FBC:
