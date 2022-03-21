@@ -5,18 +5,23 @@ Interpreteur::Interpreteur(){
     boucleActif = false;
 }
 
-void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
+void Interpreteur::faire(uint8_t code, uint16_t &addresse) {
     uint8_t operande;
-    addresse += 0x08;
+    addresse++;
     memoire.lecture(addresse, &operande);
+    if(code != DBT && !estContinu){
+        return;
+    }
     switch (code)
     {
         case DBT:
             estContinu = true;
             break;
         case ATT:
-            double tempsAtt = operande * 25;
-            _delay_ms(tempsAtt);
+            for (uint8_t i = 0; i < operande; i++)
+            {
+                _delay_ms(25);
+            }
             break;
         case DAL:
             del.appliquerVertDel();
@@ -34,12 +39,16 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             moteur.arreter();
             break;
         case MAV:
-            uint8_t vitesse = (uint8_t) (operande/255 * 100);
-            moteur.avancer(vitesse);
+            {
+                uint8_t vitesse = (uint8_t) (operande/255.0 * 100);
+                moteur.avancer(vitesse);
+            }
             break;
         case MRE:
-            uint8_t vitesse = (uint8_t) (operande/255 * 100);
-            moteur.reculer(vitesse);
+            {
+                uint8_t vitesse = (uint8_t) (operande/255.0 * 100);
+                moteur.reculer(vitesse);
+            }
             break;
         case TRD:
             moteur.tournerDroite();
@@ -81,4 +90,5 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             break;
     }
     
+    addresse++;
 }

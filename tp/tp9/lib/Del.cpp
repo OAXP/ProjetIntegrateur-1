@@ -11,6 +11,9 @@
 
 Del::Del() {
     DDRA |= (1 << PA0) | (1 << PA1);
+    _port = &PORTA;
+    _pinDel0 = PA0;
+    _pinDel1 = PA1;
 }
 
 Del::Del(volatile uint8_t *port, uint8_t pinDel0, uint8_t pinDel1) : _port(port), _pinDel0(pinDel0), _pinDel1(pinDel1) {

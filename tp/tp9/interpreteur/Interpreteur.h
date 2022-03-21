@@ -12,7 +12,7 @@
 class Interpreteur {
     public:
     Interpreteur();
-    void faire(uint8_t code, uint8_t &addresse);
+    void faire(uint8_t code, uint16_t &addresse);
 
     private:
     bool estContinu;

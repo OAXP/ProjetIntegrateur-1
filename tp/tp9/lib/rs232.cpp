@@ -14,9 +14,10 @@ Rs232::Rs232(){
     UBRR0L = 0xCF;
     // permettre la réception et la transmission par le UART0
     UCSR0A = 0 ;
-    UCSR0B = (1 << TXEN0) | (1 << RXEN0);
+    UCSR0A |= (1<< TXC0) | (1<< UDRE0 ) | ( 1 << MPCM0);
+    UCSR0B = (1 << RXCIE0) | ( 1 << TXCIE0) | ( 1 << UDRIE0) | ( 1 << RXEN0) | ( 1<< TXEN0);
     // Format des trames: 8 bits, 1 stop bits, sans parité
-    UCSR0C = (1 << USBS0) | (1 << UCSZ01) | (1 << UCSZ00);
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
 }
 
 void Rs232::transmissionUART(uint8_t donnee){
@@ -27,8 +28,8 @@ void Rs232::transmissionUART(uint8_t donnee){
     UDR0 = donnee;
 }
 
-uint8_t Rs232::receptionUART(){
+uint8_t Rs232::receptionUART(void){
     /* Wait for data receive */
-    while(!(UCSR0A) & (1<<RXC0));
+    while(!(UCSR0A & (1<<RXC0)));
     return UDR0;
 }
