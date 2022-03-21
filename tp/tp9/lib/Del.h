@@ -11,6 +11,7 @@
 
 class Del {
     public:
+        Del();
         Del(volatile uint8_t *port, uint8_t pinDel0, uint8_t pinDel1);
 
         void appliquerRougeDel();

@@ -2,9 +2,11 @@
 
 class Boucle {
     public:
-    Boucle(uint8_t compte, uint8_t addresse);
+    Boucle();
+    Boucle(uint8_t compte, uint8_t *addresse);
+    void faire(uint8_t compte, uint8_t *addresse);
     
     private:
     uint8_t compte;
-    uint8_t addresse;
+    uint8_t *addresse;
 };
