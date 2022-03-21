@@ -19,10 +19,10 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             _delay_ms(tempsAtt);
             break;
         case DAL:
-            del.appliquerVert(); // Chargé de lab a dit une LED
+            del.appliquerVert();
             break;
         case DET:
-            del.appliquerEteintDel(); // Chargé de lab a dit une LED
+            del.appliquerEteintDel();
             break;
         case SGO:
             sonerie.jouerNote(operande);
@@ -42,10 +42,14 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             moteur.reculer(vitesse);
             break;
         case TRD:
-            moteur.tournerDroite(); // TODO 90 degrés
+            moteur.tournerDroite();
+            _delay_ms(500); // Temps pris pour tourner de 90 degrés sur du bois
+            moteur.arreter();
             break;
         case TRG:
             moteur.tournerGauche(); // TODO 90 degrés
+            _delay_ms(500); // Temps pris pour tourner de 90 degrés sur du bois
+            moteur.arreter();
             break;
         case DBC:
             if (boucleActif==false){     //boucleActif false si on atteint pas DBC par FBC
