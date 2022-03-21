@@ -14,9 +14,9 @@ class Moteur {
     public:
         Moteur();
 
-        void avancer();
+        void avancer(uint8_t pourcentage);
 
-        void reculer();
+        void reculer(uint8_t pourcentage);
 
         void tournerDroite();
 

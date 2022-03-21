@@ -1,11 +1,8 @@
 #include "Interpreteur.h"
 
-bool boucleActif = false;
-uint16_t sauvegarde;
-uint8_t compte;
-uint8_t compteur;
 Interpreteur::Interpreteur(){
     estContinu = false;
+    boucleActif = false;
 }
 
 void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
@@ -18,12 +15,14 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             estContinu = true;
             break;
         case ATT:
+            double tempsAtt = operande * 25;
+            _delay_ms(tempsAtt);
             break;
         case DAL:
-            del.appliquerVert(); // Choisir quel DEL allumer
+            del.appliquerVert(); // Chargé de lab a dit une LED
             break;
         case DET:
-            del.appliquerEteintDel(); // Choisir quel DEL éteindre
+            del.appliquerEteintDel(); // Chargé de lab a dit une LED
             break;
         case SGO:
             sonerie.jouerNote(operande);
@@ -35,10 +34,12 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             moteur.arreter();
             break;
         case MAV:
-            moteur.avancer(); // TODO remplacer par personnalisé
+            uint8_t vitesse = (uint8_t) (operande/255 * 100);
+            moteur.avancer(vitesse);
             break;
         case MRE:
-            moteur.reculer(); // TODO remplacer par personnalisé
+            uint8_t vitesse = (uint8_t) (operande/255 * 100);
+            moteur.reculer(vitesse);
             break;
         case TRD:
             moteur.tournerDroite(); // TODO 90 degrés

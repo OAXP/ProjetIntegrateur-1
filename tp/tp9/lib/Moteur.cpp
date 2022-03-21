@@ -29,12 +29,12 @@ void Moteur::directionPersonnalisee(uint8_t pourcentage0, uint8_t pourcentage1, 
     _pwm.appliquerPourcentage(pourcentage0, pourcentage1);
 }
 
-void Moteur::avancer() {
-    directionPersonnalisee(100, 100, 0, 0);
+void Moteur::avancer(uint8_t pourcentage) {
+    directionPersonnalisee(pourcentage, pourcentage, 0, 0);
 }
 
-void Moteur::reculer() {
-    directionPersonnalisee(100, 100, 1, 1);
+void Moteur::reculer(uint8_t pourcentage) {
+    directionPersonnalisee(pourcentage, pourcentage, 1, 1);
 }
 
 void Moteur::tournerDroite() {

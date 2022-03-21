@@ -7,7 +7,7 @@
 #include "Midi.h"
 #include "Moteur.h"
 #include "memoire_24.h"
-#include "Boucle.h"
+// #include "Boucle.h" En phase de test
 
 class Interpreteur {
     public:
@@ -20,7 +20,7 @@ class Interpreteur {
     Midi sonerie;
     Moteur moteur;
     Memoire24CXXX memoire;
-    Boucle boucle;
+    // Boucle boucle; En phase de test
     uint16_t sauvegarde;
     uint8_t compte;
     bool boucleActif;
