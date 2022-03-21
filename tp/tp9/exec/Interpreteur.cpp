@@ -1,5 +1,9 @@
 #include "Interpreteur.h"
 
+bool boucleActif = false;
+uint16_t sauvegarde;
+uint8_t compte;
+uint8_t compteur;
 Interpreteur::Interpreteur(){
     estContinu = false;
 }
@@ -43,11 +47,26 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
             moteur.tournerGauche(); // TODO 90 degrés
             break;
         case DBC:
-            // Todo commencer la boucle
-            boucle.faire(100, &addresse);
+            if (boucleActif==false){     //boucleActif false si on atteint pas DBC par FBC
+                boucleActif = true;
+                sauvegarde = addresse;   //addresse a retourner quand on atteint FBC
+                compte = &operande;      //compte = nombre de fois a repeter boucle
+            }
             break;
         case FBC:
-            // Todo finir la boucle
+            if (compteur == compte)
+            {
+                boucleActif = false; //exit boucle lorsque nb de repetition atteint
+            }
+
+            if (boucleActif==true)
+            {
+                compteur++;          //augmenter compteur si nb de repetition pas atteint
+                addresse = sauvegarde;  //return to DBC
+            } else if (boucleActif == false){
+                sauvegarde = 0;      // reset
+                compte = 0;
+            }
             break;
         case FIN:
             estContinu = false;
@@ -56,4 +75,5 @@ void Interpreteur::faire(uint8_t code, uint8_t &addresse) {
         default:
             break;
     }
+    
 }

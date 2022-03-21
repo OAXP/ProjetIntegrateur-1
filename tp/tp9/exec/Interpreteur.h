@@ -21,4 +21,8 @@ class Interpreteur {
     Moteur moteur;
     Memoire24CXXX memoire;
     Boucle boucle;
+    uint16_t sauvegarde;
+    uint8_t compte;
+    bool boucleActif;
+    uint8_t compteur;
 };

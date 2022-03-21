@@ -15,4 +15,5 @@ class Rs232{
         
     private:
         uint8_t donnee;
+        uint16_t sauvegarde;
 };
