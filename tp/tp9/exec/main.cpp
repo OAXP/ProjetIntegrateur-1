@@ -10,11 +10,13 @@ int main(){
 
     //ecrire bytecode a la memoire
     Rs232 writer;
-    uint8_t addresse = 0x00;
-    for (uint8_t i = 0; i < binSize; i++)
+    Memoire24CXXX memoire;
+    uint16_t addresse = 0x0000;
+    uint16_t binSize = 0x001A; //binsize = 26
+    for (uint16_t i = 0; i < binSize; i++)
     {
-        memoire.ecriture(adresse, writer.receiveUART());
-        addresse += 0x08;
+        memoire.ecriture(addresse, writer.receiveUART());
+        addresse += 0x0008;
     }
     
     while (true)
