@@ -1,3 +1,13 @@
+/**
+ * @file instructions_robot.h
+ * @author Andy Tran
+ * @brief Ce fichier défini les constantes mnémonique à leur valeur binaire.
+ * @date 2022-03-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #define DBT 0x01
 #define ATT 0x02
 #define DAL 0x44

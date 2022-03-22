@@ -1,3 +1,5 @@
+// Classe à ignorer pour le moment
+
 #include <avr/io.h>
 
 class Boucle {

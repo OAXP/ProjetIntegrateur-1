@@ -1,3 +1,5 @@
+// Classe à ignorer pour le moment
+
 #include "Boucle.h"
 
 Boucle::Boucle() : compte(0), addresse(nullptr) {}
