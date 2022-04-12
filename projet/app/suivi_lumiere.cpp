@@ -1,10 +1,5 @@
 #include "suivi_lumiere.h"
 
-const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
-const uint8_t ROUGE = 0x02;    // 0b00000010 Courant sur A1 pour avoir du Rouge
-const uint8_t VERT = 0x01;     // 0b00000001 Courant sur A0 pour avoir du VERT
-const uint8_t DELAI_AMBRE = 3; // Délai en ms pour avoir la couleur ambre
-
 
 uint8_t convertionHuitBits(uint16_t num){
     // Garde seulement les 8 bits pertinents des 16 bits fournis par le CAN
