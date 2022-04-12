@@ -17,6 +17,8 @@
 #include "Bouton.h"
 #include "Del.h"
 #include "debug.h"
+#include "memoire_24.h"
+#include "ecrire.h"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -51,6 +53,9 @@ int main() {
     Del del(&PORTA, PA0, PA1);
     Bouton boutonInt(&PIND, PD2);
     Bouton boutonBlanc(&PINA, PA6);
+    uint16_t addresse = 0x0000;
+    Rs232 rs232;
+    Memoire24CXXX memoire;
 
     // Variables pour Debug
     char tamponDebug[100];
@@ -151,7 +156,7 @@ int main() {
                 }
 
                 suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Vérifier si ça marche avec Mur déjà
-
+                ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
             }
 
         }
