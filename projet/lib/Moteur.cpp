@@ -27,6 +27,24 @@ void Moteur::directionPersonnalisee(uint8_t pourcentage0, uint8_t pourcentage1, 
         PORTB |= (direction1 << PB5);
     }
     _pwm.appliquerPourcentage(pourcentage0, pourcentage1);
+    pourcentageG = pourcentage0;
+    pourcentageD = pourcentage1;
+}
+
+uint8_t Moteur::getPourcentageG() {
+    return pourcentageG;
+}
+
+uint8_t Moteur::getPourcentageD() {
+    return pourcentageD;
+}
+
+bool Moteur::getDirectionG() {
+    return directionG;
+}
+
+bool Moteur::getDirectionD() {
+    return directionD;
 }
 
 void Moteur::avancer(uint8_t pourcentage) {
@@ -46,5 +64,5 @@ void Moteur::tournerGauche() {
 }
 
 void Moteur::arreter() {
-    _pwm.appliquerPourcentage(0, 0);
+    directionPersonnalisee(0, 0, 0, 0);
 }
