@@ -42,7 +42,7 @@ void Timer1::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
     
     TCCR1A |= (1 << COM1A1) | (1 << COM1B1);
 
-    TCCR1B |= (1 << CS11); // 8 prescaler
+    TCCR1B |= (1 << CS10) | (1 << CS11); // 64 prescaler
 
     TCCR1C = 0;
 
