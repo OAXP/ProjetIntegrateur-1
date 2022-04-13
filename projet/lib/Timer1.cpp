@@ -26,11 +26,11 @@ void Timer1::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
     OCR1B = duree;
 
     switch (modeDeFonctionnement){
-        case 0 :    
+        case 0 :                    //fast pwm 8bit
             TCCR1A |= (1 << WGM10); 
             TCCR1B |= (1 << WGM12);
             break;
-        case 1 :
+        case 1 :                    // ctc
             TCCR1A = 0; 
             TCCR1B |= (1 << WGM12);
             break;
@@ -42,7 +42,7 @@ void Timer1::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
     
     TCCR1A |= (1 << COM1A1) | (1 << COM1B1);
 
-    TCCR1B |= (1 << CS11); // définir le prescaler
+    TCCR1B |= (1 << CS11); // 8 prescaler
 
     TCCR1C = 0;
 

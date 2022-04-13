@@ -19,6 +19,7 @@
 #include "debug.h"
 #include "memoire_24.h"
 #include "ecrire.h"
+#include "Timer1.cpp"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -53,9 +54,9 @@ int main() {
     Del del(&PORTA, PA0, PA1);
     Bouton boutonInt(&PIND, PD2);
     Bouton boutonBlanc(&PINA, PA6);
-    uint16_t addresse = 0x0000;
     Rs232 rs232;
     Memoire24CXXX memoire;
+    Timer1 timer1;
 
     // Variables pour Debug
     char tamponDebug[100];
@@ -69,6 +70,7 @@ int main() {
     uint8_t pourcentageMoteurG = 0;
     uint8_t pourcentageMoteurD = 0;
     uint8_t distanceMurCm = 0;
+    uint16_t addresse = 0x0000;
 
     // Réglage des entrées/sorties
     DDRA &= ~(1 << PA3 | 1 << PA5);
@@ -156,7 +158,8 @@ int main() {
                 }
 
                 suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Vérifier si ça marche avec Mur déjà
-                ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+                //ecriture en memoire chaque 0.04s (25 ecritures/s)
+                timer1.initialiser(1,5000); //ctc mode, duree: 0.04s
             }
 
         }
@@ -164,4 +167,10 @@ int main() {
     }
 
     return 0;
+}
+
+ISR(TIMER1_OVF_vect)
+{
+    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+    EIFR |= (1 << INTF0) ;
 }
