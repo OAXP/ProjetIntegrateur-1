@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "memoire_24.h"
 #include "ecrire.h"
-#include "Timer1.cpp"
+#include "Timer1.h"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -56,7 +56,7 @@ int main() {
     Bouton boutonBlanc(&PINA, PA6);
     Rs232 rs232;
     Memoire24CXXX memoire;
-    Timer1 timer1;
+    Timer1 timer1; // À corriger pour respecter le constructor de la class
 
     // Variables pour Debug
     char tamponDebug[100];
