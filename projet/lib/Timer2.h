@@ -16,7 +16,7 @@ class Timer2 {
 
 public :
 
-    Timer2(uint8_t modeDeFonctionnement, uint16_t duree);
+    Timer2();
     void initialiser(uint8_t modeDeFonctionnement, uint16_t duree);
     void arreter();
 

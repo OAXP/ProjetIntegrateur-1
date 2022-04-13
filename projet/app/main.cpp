@@ -72,14 +72,13 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
-ISR(TIMER2_OVF_vect)
+ISR(TIMER2_COMPA_vect)
 {
     ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
     EIFR |= (1 << INTF0);
 }
 
 int main() {
-
     // Réglage des entrées/sorties
     DDRA &= ~(1 << PA3 | 1 << PA5);
 
@@ -100,6 +99,7 @@ int main() {
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
+            timer2.initialiser(1, 255); //ctc, 31 ecritures/s
             break;
         }
     }
@@ -166,8 +166,7 @@ int main() {
                 }
 
                 suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Vérifier si ça marche avec Mur déjà
-                //ecriture en memoire chaque 0.04s (25 ecritures/s)
-                timer1.initialiser(1,5000); //ctc mode, duree: 0.04s
+                
             }
 
         }

@@ -9,9 +9,7 @@
 
 #include "Timer2.h"
 
-Timer2::Timer2(uint8_t modeDeFonctionnement, uint16_t duree){
-
-    initialiser(modeDeFonctionnement, duree);
+Timer2::Timer2(){
 
 }
 
@@ -21,7 +19,6 @@ void Timer2::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
     TCNT2 = 0;
 
     OCR2A = duree;
-    OCR2B = duree;
 
     switch (modeDeFonctionnement){
         case 0 :    
