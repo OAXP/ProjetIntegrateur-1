@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "memoire_24.h"
 #include "ecrire.h"
-#include "Timer1.h"
+#include "Timer2.h"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -38,7 +38,7 @@ Bouton boutonInt(&PIND, PD2);
 Bouton boutonBlanc(&PINA, PA6);
 Rs232 rs232;
 Memoire24CXXX memoire;
-Timer1 timer1; // À corriger pour respecter le constructor de la class
+Timer2 timer2; // À corriger pour respecter le constructor de la class
 
 // Variables pour Debug
 char tamponDebug[100];
@@ -72,16 +72,13 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER2_OVF_vect)
 {
     ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
-    EIFR |= (1 << INTF0) ;
+    EIFR |= (1 << INTF0);
 }
 
 int main() {
-    
-
-    
 
     // Réglage des entrées/sorties
     DDRA &= ~(1 << PA3 | 1 << PA5);
