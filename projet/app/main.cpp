@@ -30,6 +30,31 @@ const uint8_t DELAI_AMBRE = 3; // Délai en ms pour avoir la couleur ambre
 // Clignotement de DEL à 5Hz pour 3 secondes
 const uint8_t DELAI_CLIGNOTANT = 100; // 100ms vient de la période (200ms) divisée par 2
 
+// Classes utilisées
+Moteur moteur;
+can convertisseurAnalog;
+Del del(&PORTA, PA0, PA1);
+Bouton boutonInt(&PIND, PD2);
+Bouton boutonBlanc(&PINA, PA6);
+Rs232 rs232;
+Memoire24CXXX memoire;
+Timer1 timer1; // À corriger pour respecter le constructor de la class
+
+// Variables pour Debug
+char tamponDebug[100];
+int debugTaille;
+
+// Variables d'information sur le robot
+char signeMoteurG = ' ';
+char signeMoteurD = ' ';
+uint8_t lecturePhotoD; // Photorésistance droite
+uint8_t lecturePhotoG; // Photorésistance gauche
+uint8_t pourcentageMoteurG = 0;
+uint8_t pourcentageMoteurD = 0;
+uint8_t distanceMurCm = 0;
+volatile uint16_t addresse = 0x0000;
+
+
 void clignoterDel(Del& del, bool estRouge) {
 
     // 15 itérations, car 3000ms / 200ms = 15
@@ -47,30 +72,16 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
+ISR(TIMER1_OVF_vect)
+{
+    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+    EIFR |= (1 << INTF0) ;
+}
+
 int main() {
-    // Classes utilisées
-    Moteur moteur;
-    can convertisseurAnalog;
-    Del del(&PORTA, PA0, PA1);
-    Bouton boutonInt(&PIND, PD2);
-    Bouton boutonBlanc(&PINA, PA6);
-    Rs232 rs232;
-    Memoire24CXXX memoire;
-    Timer1 timer1; // À corriger pour respecter le constructor de la class
+    
 
-    // Variables pour Debug
-    char tamponDebug[100];
-    int debugTaille;
-
-    // Variables d'information sur le robot
-    char signeMoteurG = ' ';
-    char signeMoteurD = ' ';
-    uint8_t lecturePhotoD; // Photorésistance droite
-    uint8_t lecturePhotoG; // Photorésistance gauche
-    uint8_t pourcentageMoteurG = 0;
-    uint8_t pourcentageMoteurD = 0;
-    uint8_t distanceMurCm = 0;
-    uint16_t addresse = 0x0000;
+    
 
     // Réglage des entrées/sorties
     DDRA &= ~(1 << PA3 | 1 << PA5);
@@ -167,10 +178,4 @@ int main() {
     }
 
     return 0;
-}
-
-ISR(TIMER1_OVF_vect)
-{
-    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
-    EIFR |= (1 << INTF0) ;
 }
