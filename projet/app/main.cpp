@@ -93,13 +93,14 @@ int main() {
         if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, true); // mode reprise
             estModeReprise = true;
+            timer2.arreter();
             break;
         }
 
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            timer2.initialiser(1, 255); //ctc, 31 ecritures/s
+            timer2.initialiser(1, 255); //ctc, 31 ecritures/s, environ 15 min maximum
             break;
         }
     }
@@ -150,22 +151,31 @@ int main() {
                 if(estArrete) {
 
                     if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
+
+                        timer2.arreter(); // Parcours à enregistrer terminé
+                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
+
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
+
                         // TODO Faire Demi-tour en U et mettre DEL ambrée
+
                         break;
                     }
 
                     if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
+
                         estFini = true;
+
                         del.appliquerRougeDel();
-                        // Enregistrer le parcours en mémoire
+                        timer2.arreter();
+                        // Processus à effectuer? sinon on fait un délai
                         del.appliquerVertDel(); // Pour indiquer que l'écriture est terminée
                         break;
                     }
 
                 }
 
-                suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Vérifier si ça marche avec Mur déjà
+                suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
                 
             }
 

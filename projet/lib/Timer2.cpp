@@ -19,6 +19,7 @@ void Timer2::initialiser(uint8_t modeDeFonctionnement, uint16_t duree){
     TCNT2 = 0;
 
     OCR2A = duree;
+    OCR2B = 0;
 
     switch (modeDeFonctionnement){
         case 0 :    
