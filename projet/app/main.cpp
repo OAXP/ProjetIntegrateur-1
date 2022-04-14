@@ -55,7 +55,7 @@ uint8_t lectureCapteur;
 uint8_t pourcentageMoteurG = 0;
 uint8_t pourcentageMoteurD = 0;
 uint8_t distanceMurCm = 0;
-volatile uint16_t addresse = 0x0000;
+uint16_t addresse = 0x0000;
 bool murDetecte;
 
 
@@ -136,7 +136,7 @@ int main() {
             distanceMurCm, // D(c)
             lecturePhotoG, lecturePhotoD // P(d, e)
         );
-        //DEBUG_PRINT(tamponDebug, debugTaille);
+        DEBUG_PRINT(tamponDebug, debugTaille);
 
         if(estModeReprise) {
 
@@ -145,6 +145,25 @@ int main() {
             }
             else {
                 // Lire mémoire et refaire parcours
+                addresse = 0;
+                uint8_t lectureMemoire0;
+                uint8_t lectureMemoire1;
+                
+                while(true) {
+                    memoire.lecture(addresse, &lectureMemoire0);
+                    addresse++;
+                    memoire.lecture(addresse, &lectureMemoire1);
+                    addresse++;
+
+                    if(lectureMemoire0 == 120 || lectureMemoire1 == 120) {
+                        estFini = true;
+                        moteur.arreter();
+                        break;
+                    }
+
+                    _delay_ms(20);
+                    moteur.directionPersonnalisee(lectureMemoire0, lectureMemoire1, 0, 0);
+                }
             }
 
         } 
@@ -155,14 +174,13 @@ int main() {
             }
             else {
 
-                murDetecte = suivre_mur(moteur, lectureCapteur);
+                murDetecte = suivre_mur(moteur, lectureCapteur, memoire, addresse);
 
                 if(estArrete) {
 
                     if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
 
                         //timer2.arreter(); // Parcours à enregistrer terminé
-                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
 
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
 
@@ -178,14 +196,15 @@ int main() {
                         del.appliquerRougeDel();
                         //timer2.arreter();
                         // Processus à effectuer? sinon on fait un délai
+                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
+                        _delay_ms(500);
                         del.appliquerVertDel(); // Pour indiquer que l'écriture est terminée
                         break;
                     }
 
-                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD, memoire, addresse); // Si ça bouge déjà avec le Mur, ne pas faire ça
 
                 }
-                ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
                 
             }
 

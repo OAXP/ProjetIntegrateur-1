@@ -6,9 +6,10 @@ uint8_t convertionHuitBits(uint16_t num){
 }
 
 // Suivi Lumière
-void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD){
+void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD, Memoire24CXXX& memoire, uint16_t& addresse){
     uint8_t pourcentageD; // Pourcentage PWM droite
     uint8_t pourcentageG; // Pourcentage PWM gauche
+    bool bouge = true;
 
     
     pourcentageD = (lecturePhotoG >= LIMITE_MAX) ? 100 : (lecturePhotoG - LIMITE_AMBIANTE);
@@ -31,13 +32,17 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
     else
     {
         moteur.arreter();
+        bouge = false;
     }
 
-    _delay_ms(20);
+    if(bouge) {
+        _delay_ms(20);
+        ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
+    }
 }
 
 // Suivi Mur
-bool suivre_mur(Moteur& moteur, uint8_t& distance){
+bool suivre_mur(Moteur& moteur, uint8_t& distance, Memoire24CXXX& memoire, uint16_t& addresse){
 
     bool murDetecte = true;
 
@@ -86,6 +91,7 @@ bool suivre_mur(Moteur& moteur, uint8_t& distance){
 
     if(murDetecte) {
         _delay_ms(20);
+        ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
     }
     return murDetecte;
 }
