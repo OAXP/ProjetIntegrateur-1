@@ -6,6 +6,7 @@
  * 
  */
 #include "rs232.h"
+#include <avr/delay.h>
 
 Rs232::Rs232(){
     // 2400 bauds. Nous vous donnons la valeur des deux
@@ -24,6 +25,7 @@ void Rs232::transmissionUART(uint8_t donnee){
     /* Wait for empty transmit buffer */
     while ( !( UCSR0A & (1<<UDRE0)) )
     ;
+    _delay_ms(5);
     /* Put data into buffer, sends the data */
     UDR0 = donnee;
 }

@@ -14,14 +14,15 @@
 #include <math.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "suivi_lumiere.h"
-#include "suivi_mur.h"
+#include <stdio.h>
+#include "suivi.h"
 #include "Bouton.h"
 #include "Del.h"
 #include "debug.h"
 #include "memoire_24.h"
+#include "can.h"
 #include "ecrire.h"
-#include "Timer2.h"
+//#include "Timer2.h"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -38,9 +39,8 @@ can convertisseurAnalog;
 Del del(&PORTA, PA0, PA1);
 Bouton boutonInt(&PIND, PD2);
 Bouton boutonBlanc(&PINA, PA6);
-Rs232 rs232;
 Memoire24CXXX memoire;
-Timer2 timer2; // À corriger pour respecter le constructor de la class
+//Timer2 timer2; // À corriger pour respecter le constructor de la class
 
 // Variables pour Debug
 char tamponDebug[100];
@@ -76,15 +76,16 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
+/*
 ISR(TIMER2_COMPA_vect)
 {
-    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
-    EIFR |= (1 << INTF0);
+    //ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
 }
+*/
 
 int main() {
     // Réglage des entrées/sorties
-    DDRA &= ~(1 << PA3 | 1 << PA5);
+    DDRA &= ~(1 << PA2 | 1 << PA3 | 1 << PA5);
 
     // Variables de fonctionnement du robot
     bool estModeReprise = false;
@@ -92,19 +93,20 @@ int main() {
     bool estArrete = true;
 
 
+    
     while (true)
     {
         if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, true); // mode reprise
             estModeReprise = true;
-            timer2.arreter();
+            //timer2.arreter();
             break;
         }
 
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            timer2.initialiser(1, 157); //ctc, écriture chaque 20ms, environ 5 min maximum
+            //timer2.initialiser(1, 157); //ctc, écriture chaque 20ms, environ 5 min maximum
             break;
         }
     }
@@ -134,7 +136,7 @@ int main() {
             distanceMurCm, // D(c)
             lecturePhotoG, lecturePhotoD // P(d, e)
         );
-        DEBUG_PRINT(tamponDebug, debugTaille);
+        //DEBUG_PRINT(tamponDebug, debugTaille);
 
         if(estModeReprise) {
 
@@ -153,11 +155,13 @@ int main() {
             }
             else {
 
+                murDetecte = suivre_mur(moteur, lectureCapteur);
+
                 if(estArrete) {
 
                     if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
 
-                        timer2.arreter(); // Parcours à enregistrer terminé
+                        //timer2.arreter(); // Parcours à enregistrer terminé
                         indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
 
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
@@ -172,19 +176,16 @@ int main() {
                         estFini = true;
 
                         del.appliquerRougeDel();
-                        timer2.arreter();
+                        //timer2.arreter();
                         // Processus à effectuer? sinon on fait un délai
                         del.appliquerVertDel(); // Pour indiquer que l'écriture est terminée
                         break;
                     }
 
-                }
-
-                murDetecte = suivre_mur(moteur, lectureCapteur);
-
-                if(!murDetecte) {
                     suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+
                 }
+                ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
                 
             }
 
