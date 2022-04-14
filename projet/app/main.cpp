@@ -11,9 +11,11 @@
 #define F_CPU 8000000
 
 #include <avr/io.h>
+#include <math.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "suivi_lumiere.h"
+#include "suivi_mur.h"
 #include "Bouton.h"
 #include "Del.h"
 #include "debug.h"
@@ -49,10 +51,12 @@ char signeMoteurG = ' ';
 char signeMoteurD = ' ';
 uint8_t lecturePhotoD; // Photorésistance droite
 uint8_t lecturePhotoG; // Photorésistance gauche
+uint8_t lectureCapteur;
 uint8_t pourcentageMoteurG = 0;
 uint8_t pourcentageMoteurD = 0;
 uint8_t distanceMurCm = 0;
 volatile uint16_t addresse = 0x0000;
+bool murDetecte;
 
 
 void clignoterDel(Del& del, bool estRouge) {
@@ -100,7 +104,7 @@ int main() {
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            timer2.initialiser(1, 255); //ctc, 31 ecritures/s, environ 15 min maximum
+            timer2.initialiser(1, 157); //ctc, écriture chaque 20ms, environ 5 min maximum
             break;
         }
     }
@@ -119,7 +123,8 @@ int main() {
         lecturePhotoG = convertionHuitBits(convertisseurAnalog.lecture(PA5));
 
         // Lecture du capteur de distance
-        distanceMurCm = 10; // TODO remplacer 10 par la variable appropriée
+        lectureCapteur = convertionHuitBits(convertisseurAnalog.lecture(PA2));
+        distanceMurCm = (uint8_t) (2998.8 * pow(lectureCapteur, (-1.173))); // Fonction prise de https://www.makerguides.com/sharp-gp2y0a21yk0f-ir-distance-sensor-arduino-tutorial/
 
         // Debugage des valeurs
         debugTaille = sprintf(tamponDebug, 
@@ -175,7 +180,11 @@ int main() {
 
                 }
 
-                suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                murDetecte = suivre_mur(moteur, lectureCapteur);
+
+                if(!murDetecte) {
+                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                }
                 
             }
 
