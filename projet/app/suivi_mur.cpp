@@ -1,52 +1,51 @@
-// #include "suivi_mur.h"
+#include "suivi_mur.h"
 
+bool suivre_mur(Moteur& moteur, uint8_t& distance){
 
-// uint8_t convertionEnDistance(uint8_t valeur){
-//     // Formule de conversion en distance prise sur 
-//     return 2998.8 * pow(valeur, -1.173);
-// }
+    bool murDetecte = true;
 
-// void suivre_mur(Moteur& moteur, uint8_t& lectureDistance){
-
-//     //Si le robot est a la distance cible du mur
-//     if (lectureDistance == DISTANCE_CIBLE){
-//         moteur.directionPersonnalisee(80, 80, 0, 0);
-//     }
-//     //Si le robot est a une distance plus petite que la distance cible par rapport au mur
-//     else if(lectureDistance < DISTANCE_CIBLE){
-//         if(lectureDistance >= 18){
-//             moteur.directionPersonnalisee(60, 80, 0, 0);
-//         }
-//         else if(lectureDistance >= 16){
-//             moteur.directionPersonnalisee(40, 80, 0, 0);
-//         }
-//         else if(lectureDistance >= 14){
-//             moteur.directionPersonnalisee(20, 80, 0, 0);
-//         }
-//         else if(lectureDistance >= 12){
-//             moteur.directionPersonnalisee(0, 80, 0, 0);
-//         }
-//         else{
-//             moteur.arreter();
-//         }
-//     }
-//     //Si le robot est a une distance plus grande que la distance cible par rapport au mur
-//     else{
-//         if(lectureDistance <= 22){
-//             moteur.directionPersonnalisee(80, 60, 0, 0);
-//         }
-//         else if(lectureDistance <= 24){
-//             moteur.directionPersonnalisee(80, 40, 0, 0);
-//         }
-//         else if(lectureDistance <= 26){
-//             moteur.directionPersonnalisee(80, 20, 0, 0);
-//         }
-//         else if(lectureDistance <= 28){
-//             moteur.directionPersonnalisee(80, 0, 0, 0);
-//         }
-//         else{
-//             moteur.arreter();
-//         }
-//     }
-//     _delay_ms(100);
-// }
+    // Si le robot est a la distance cible du mur
+    if (distance == DISTANCE_CIBLE){
+        moteur.directionPersonnalisee(60, 50, 0, 0);
+    }
+    // Si le robot est a une distance plus grande que la distance cible par rapport au mur
+    else if(distance < DISTANCE_CIBLE){
+        if(distance >= 65){
+            moteur.directionPersonnalisee(60, 35, 0, 0); // Se rapproche tres peu
+        }
+        else if(distance >= 59){
+            moteur.directionPersonnalisee(60, 20, 0, 0); // Se rapproche peu
+        }
+        else if(distance >= 56){
+            moteur.directionPersonnalisee(60, 7, 0, 0); // Se rapproche moyennement
+        }
+        else if(distance >= 52){
+            moteur.directionPersonnalisee(60, 0, 0, 0); // Se rapproche beaucoup
+        }
+        else{
+            moteur.arreter(); // S'arrete si trop loin
+            murDetecte = false;
+        }
+    }
+    // Si le robot est a une distance plus petite que la distance cible par rapport au mur
+    else{
+        if(distance <= 75){
+            moteur.directionPersonnalisee(45, 50, 0, 0); // S'eloigne tres peu
+        }
+        else if(distance <= 82){
+            moteur.directionPersonnalisee(30, 50, 0, 0); // S'eloigne peu
+        }
+        else if(distance <= 93){
+            moteur.directionPersonnalisee(15, 50, 0, 0); // S'eloigne moyennement
+        }
+        else if(distance <= 106){
+            moteur.directionPersonnalisee(0, 60, 0, 0); // S'eloigne beaucoup
+        }
+        else{
+            moteur.arreter(); // S'arrete si trop proche
+            murDetecte = false;
+        }
+    }
+    _delay_ms(20);
+    return murDetecte;
+}
