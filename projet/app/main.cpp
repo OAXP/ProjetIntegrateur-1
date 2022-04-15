@@ -55,9 +55,52 @@ uint8_t lectureCapteur;
 uint8_t pourcentageMoteurG = 0;
 uint8_t pourcentageMoteurD = 0;
 uint8_t distanceMurCm = 0;
-uint16_t addresse = 0x0000;
+volatile uint16_t addresse = 0x0000;
 bool murDetecte;
 
+
+ISR(TIMER1_COMPA_vect)
+{
+    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+}
+
+void partirMinuterie1 (uint16_t duree) {
+    // mode CTC du timer 1 avec horloge divisée par 1024
+    // interruption après la durée spécifiée
+    /*
+    cli();
+    TCNT2 = 0;
+    OCR2A = duree;
+    TCCR2A = 0;
+    TCCR2B = (1 << WGM22) | (1 << CS22) | (1 << CS20); // mode CTC du timer 1 avec horloge divisée par 1024
+    TIMSK2 = (1 << OCIE2A); // Pour créer une interruption avec le flag OCIE1A
+
+    sei();
+    */
+    cli();
+    TCNT1 = 0;
+    OCR1A = duree;
+
+    TCCR1A = (1 << COM1A0);
+    TCCR1B = (1 << WGM12) | (1 << CS10) | (1 << CS12); // définir le prescaler clk/8mhz et CTC
+    TCCR1C = 0;
+    sei();
+}
+
+void arreterMinuterie1 () {
+    /*
+    cli();
+    TCCR2B &= ~(1 << CS20);
+    TCCR2B &= ~(1 << CS22);
+    OCR2A = 0;
+    sei();
+    */
+    cli();
+    TCCR1B &= ~(1 << CS10);
+    TCCR1B &= ~(1 << CS12);
+    OCR1A = 0;
+    sei();
+}
 
 void clignoterDel(Del& del, bool estRouge) {
 
@@ -76,12 +119,12 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
-/*
-ISR(TIMER2_COMPA_vect)
-{
-    //ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+void effectuerDemiTour() {
+    // moteur.directionPersonnalisee(60,50,0,0);
+    // ajouter DEL ambre
+    // ajouter vérification mur
 }
-*/
+
 
 int main() {
     // Réglage des entrées/sorties
@@ -99,14 +142,13 @@ int main() {
         if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, true); // mode reprise
             estModeReprise = true;
-            //timer2.arreter();
             break;
         }
 
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            //timer2.initialiser(1, 157); //ctc, écriture chaque 20ms, environ 5 min maximum
+            partirMinuterie1(200); //ctc, écriture chaque ~25.6ms/25600us
             break;
         }
     }
@@ -146,23 +188,20 @@ int main() {
             else {
                 // Lire mémoire et refaire parcours
                 addresse = 0;
-                uint8_t lectureMemoire0;
-                uint8_t lectureMemoire1;
+                uint8_t lectureMemoire;
                 
                 while(true) {
-                    memoire.lecture(addresse, &lectureMemoire0);
-                    addresse++;
-                    memoire.lecture(addresse, &lectureMemoire1);
+                    memoire.lecture(addresse, &lectureMemoire);
                     addresse++;
 
-                    if(lectureMemoire0 == 120 || lectureMemoire1 == 120) {
+                    if(lectureMemoire == 255) {
                         estFini = true;
                         moteur.arreter();
                         break;
                     }
-
-                    _delay_ms(20);
-                    moteur.directionPersonnalisee(lectureMemoire0, lectureMemoire1, 0, 0);
+                    dechiffrer_donnee(lectureMemoire, pourcentageMoteurG, pourcentageMoteurD);
+                    _delay_ms(25.6);
+                    moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, 0, 0);
                 }
             }
 
@@ -174,17 +213,19 @@ int main() {
             }
             else {
 
-                murDetecte = suivre_mur(moteur, lectureCapteur, memoire, addresse);
+                murDetecte = suivre_mur(moteur, lectureCapteur);
 
                 if(estArrete) {
 
                     if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
 
-                        //timer2.arreter(); // Parcours à enregistrer terminé
+                        // Parcours à enregistrer terminé
+                        arreterMinuterie1();
+                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
 
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
 
-                        // TODO Faire Demi-tour en U et mettre DEL ambrée
+                        effectuerDemiTour(); // TODO Revoir pour mur
 
                         break;
                     }
@@ -194,15 +235,13 @@ int main() {
                         estFini = true;
 
                         del.appliquerRougeDel();
-                        //timer2.arreter();
-                        // Processus à effectuer? sinon on fait un délai
-                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
+                        // Processus à effectuer
                         _delay_ms(500);
-                        del.appliquerVertDel(); // Pour indiquer que l'écriture est terminée
+                        del.appliquerVertDel(); // Pour indiquer que la fin
                         break;
                     }
 
-                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD, memoire, addresse); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
 
                 }
                 

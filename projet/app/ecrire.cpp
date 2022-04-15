@@ -1,24 +1,24 @@
 #include "ecrire.h"
 
-/*
-int combine(uint16_t pourcentageMoteurG, uint8_t pourcentageMoteurD) { //combiner pourcentageD et pourcentageG en un uint16_t
-	pourcentageMoteurG = pourcentageMoteurG << 8; //ex: 0xF3 -> 0xF300
-	return pourcentageMoteurG + pourcentageMoteurD;
-}
-*/
-
-void ecrire_memoire(Memoire24CXXX& memoire, uint8_t pourcentageMoteurG, uint8_t pourcentageMoteurD, uint16_t & addresse){
-    // uint16_t pwm = combine(pourcentageMoteurG, pourcentageMoteurD);
-    memoire.ecriture(addresse, pourcentageMoteurG); // addresse: (8bit)pourcentageMoteurG
-    addresse++;
-    memoire.ecriture(addresse, pourcentageMoteurD); // addresse: (8bit)pourcentageMoteurD
-    addresse++;
+uint8_t combine(uint16_t pourcentageMoteurG, uint16_t pourcentageMoteurD) { //combiner pourcentageD et pourcentageG en un uint16_t
+    pourcentageMoteurG = ((uint8_t) (pourcentageMoteurG / 10.0)) << 4; // On prend seulement les dizaines
+	pourcentageMoteurD = (uint8_t) (pourcentageMoteurD / 10.0); // On prend seulement les dizaines
+	return pourcentageMoteurG | pourcentageMoteurD;
 }
 
-void indiquer_fin_memoire(Memoire24CXXX& memoire, uint16_t& addresse) {
-    // On a décidé que les 2 valeurs indiquant la fin serait 120 puis 168;
-    memoire.ecriture(addresse, 120);
+void dechiffrer_donnee(uint8_t donnee, uint8_t& pourcentageMoteurG, uint8_t& pourcentageMoteurD) {
+    pourcentageMoteurG = (donnee >> 4) * 10;
+    pourcentageMoteurD = (donnee & 0x0F) * 10; // 0x0F pour ne garder que les bits à droite
+}
+
+void ecrire_memoire(Memoire24CXXX& memoire, uint8_t pourcentageMoteurG, uint8_t pourcentageMoteurD, volatile uint16_t & addresse){
+    uint8_t pwm = combine(pourcentageMoteurG, pourcentageMoteurD);
+    memoire.ecriture(addresse, pwm); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
     addresse++;
-    //memoire.ecriture(addresse, 168);
-    //addresse++;
+}
+
+void indiquer_fin_memoire(Memoire24CXXX& memoire, volatile uint16_t& addresse) {
+    // On a décidé que lla valeur indiquant la fin serait 255 (1111 1111);
+    memoire.ecriture(addresse, 255);
+    addresse++;
 }
