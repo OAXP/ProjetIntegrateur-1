@@ -1,9 +1,9 @@
 #include "ecrire.h"
 
-uint8_t combine(uint16_t pourcentageMoteurG, uint16_t pourcentageMoteurD) { //combiner pourcentageD et pourcentageG en un uint16_t
+uint8_t combine(uint8_t pourcentageMoteurG, uint8_t pourcentageMoteurD) { //combiner pourcentageD et pourcentageG en un uint8_t
     pourcentageMoteurG = ((uint8_t) (pourcentageMoteurG / 10.0)) << 4; // On prend seulement les dizaines
 	pourcentageMoteurD = (uint8_t) (pourcentageMoteurD / 10.0); // On prend seulement les dizaines
-	return pourcentageMoteurG | pourcentageMoteurD;
+	return pourcentageMoteurG + pourcentageMoteurD;
 }
 
 void dechiffrer_donnee(uint8_t donnee, uint8_t& pourcentageMoteurG, uint8_t& pourcentageMoteurD) {

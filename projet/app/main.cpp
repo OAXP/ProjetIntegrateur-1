@@ -61,7 +61,7 @@ bool murDetecte;
 
 ISR(TIMER1_COMPA_vect)
 {
-    ecrire_memoire(memoire, pourcentageMoteurG, pourcentageMoteurD, addresse);
+    ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
 }
 
 void partirMinuterie1 (uint16_t duree) {
@@ -84,6 +84,8 @@ void partirMinuterie1 (uint16_t duree) {
     TCCR1A = (1 << COM1A0);
     TCCR1B = (1 << WGM12) | (1 << CS10) | (1 << CS12); // définir le prescaler clk/8mhz et CTC
     TCCR1C = 0;
+    TIMSK1 = (1 << OCIE1A); // Pour créer une interruption avec le flag OCIE1A
+
     sei();
 }
 
@@ -200,8 +202,8 @@ int main() {
                         break;
                     }
                     dechiffrer_donnee(lectureMemoire, pourcentageMoteurG, pourcentageMoteurD);
-                    _delay_ms(25.6);
                     moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, 0, 0);
+                    _delay_ms(25.6);
                 }
             }
 

@@ -58,7 +58,7 @@ bool suivre_mur(Moteur& moteur, uint8_t& distance){
             moteur.directionPersonnalisee(60, 20, 0, 0); // Se rapproche peu
         }
         else if(distance >= 56){
-            moteur.directionPersonnalisee(60, 7, 0, 0); // Se rapproche moyennement
+            moteur.directionPersonnalisee(60, 10, 0, 0); // Se rapproche moyennement
         }
         else if(distance >= 52){
             moteur.directionPersonnalisee(60, 0, 0, 0); // Se rapproche beaucoup
