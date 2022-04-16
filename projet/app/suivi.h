@@ -10,7 +10,7 @@ uint8_t convertionHuitBits(uint16_t num);
 // Suivi lumière
 void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD);
 
-const uint8_t LIMITE_AMBIANTE = 100; // Limite pour lumière ambiante
+const uint8_t LIMITE_AMBIANTE = 120; // Limite pour lumière ambiante
 const uint8_t LIMITE_MAX = LIMITE_AMBIANTE + 100; // Limite pour la lumière max
 
 // Suivi Mur

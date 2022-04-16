@@ -122,9 +122,16 @@ void clignoterDel(Del& del, bool estRouge) {
 }
 
 void effectuerDemiTour() {
-    // moteur.directionPersonnalisee(60,50,0,0);
-    // ajouter DEL ambre
-    // ajouter vérification mur
+    moteur.directionPersonnalisee(70,40,0,0);
+    for (int i = 0; i < 666; i++)
+    {
+        del.appliquerRougeDel();
+        _delay_ms(DELAI_AMBRE);
+        del.appliquerVertDel();
+        _delay_ms(DELAI_AMBRE);
+    }
+    moteur.arreter();
+    del.appliquerEteintDel();
 }
 
 
@@ -228,8 +235,6 @@ int main() {
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
 
                         effectuerDemiTour(); // TODO Revoir pour mur
-
-                        break;
                     }
 
                     if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
