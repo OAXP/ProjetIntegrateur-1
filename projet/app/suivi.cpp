@@ -15,6 +15,9 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
     pourcentageD = (lecturePhotoG >= LIMITE_MAX) ? 100 : (lecturePhotoG - LIMITE_AMBIANTE);
     pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD - LIMITE_AMBIANTE);
 
+    pourcentageD = ((uint8_t) (pourcentageD/10.0)) * 10;
+    pourcentageG = ((uint8_t) (pourcentageG/10.0)) * 10;
+
     if(lecturePhotoD <= LIMITE_AMBIANTE && lecturePhotoG > LIMITE_AMBIANTE) // Rotation en sens antihoraire
     {
         pourcentageG = pourcentageD;
@@ -35,9 +38,9 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
         bouge = false;
     }
 
-    if(bouge) {
-        _delay_ms(20);
-    }
+    // if(bouge) {
+    //     _delay_ms(25);
+    // }
 }
 
 // Suivi Mur
@@ -52,7 +55,7 @@ bool suivre_mur(Moteur& moteur, uint8_t& distance){
     // Si le robot est a une distance plus grande que la distance cible par rapport au mur
     else if(distance < DISTANCE_CIBLE){
         if(distance >= 65){
-            moteur.directionPersonnalisee(60, 35, 0, 0); // Se rapproche tres peu
+            moteur.directionPersonnalisee(60, 30, 0, 0); // Se rapproche tres peu
         }
         else if(distance >= 59){
             moteur.directionPersonnalisee(60, 20, 0, 0); // Se rapproche peu
@@ -71,25 +74,25 @@ bool suivre_mur(Moteur& moteur, uint8_t& distance){
     // Si le robot est a une distance plus petite que la distance cible par rapport au mur
     else{
         if(distance <= 75){
-            moteur.directionPersonnalisee(45, 50, 0, 0); // S'eloigne tres peu
+            moteur.directionPersonnalisee(50, 50, 0, 0); // S'eloigne tres peu
         }
         else if(distance <= 82){
             moteur.directionPersonnalisee(30, 50, 0, 0); // S'eloigne peu
         }
         else if(distance <= 93){
-            moteur.directionPersonnalisee(15, 50, 0, 0); // S'eloigne moyennement
+            moteur.directionPersonnalisee(20, 50, 0, 0); // S'eloigne moyennement
         }
-        else if(distance <= 106){
-            moteur.directionPersonnalisee(0, 60, 0, 0); // S'eloigne beaucoup
+        else{ //106
+            moteur.directionPersonnalisee(10, 50, 0, 0); // S'eloigne beaucoup
         }
-        else{
-            moteur.arreter(); // S'arrete si trop proche
-            murDetecte = false;
-        }
+        // else{
+        //     moteur.arreter(); // S'arrete si trop proche
+        //     murDetecte = false;
+        // }
     }
 
-    if(murDetecte) {
-        _delay_ms(20);
-    }
+    // if(murDetecte) {
+    //     _delay_ms(25);
+    // }
     return murDetecte;
 }

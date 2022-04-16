@@ -61,7 +61,7 @@ bool murDetecte;
 
 ISR(TIMER1_COMPA_vect)
 {
-    ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
+    //ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
 }
 
 void partirMinuterie1 (uint16_t duree) {
@@ -145,7 +145,6 @@ int main() {
     bool estArrete = true;
 
 
-    
     while (true)
     {
         if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
@@ -157,7 +156,7 @@ int main() {
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            partirMinuterie1(200); //ctc, écriture chaque ~25.6ms/25600us
+            //partirMinuterie1(200); //ctc, écriture chaque ~25.6ms/25600us
             break;
         }
     }
@@ -251,6 +250,8 @@ int main() {
                     suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
 
                 }
+                ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
+                _delay_ms(25.6);
                 
             }
 
