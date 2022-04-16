@@ -178,7 +178,7 @@ int main() {
         if(estModeReprise) {
 
             if(estFini) {
-                del.appliquerVertDel();
+                // Del reste verte
             }
             else {
                 // Lire mémoire et refaire parcours
@@ -193,9 +193,8 @@ int main() {
                     {
                         memoire.lecture(addresse, &lectureMemoire);
                         addresse++;
+                        _delay_ms(5);
                         if(lectureMemoire == 255) {
-                            estFini = true;
-                            moteur.arreter();
                             reprise[i] = 255;
                             break;
                         }
@@ -207,6 +206,7 @@ int main() {
                         if(reprise[i] == 255) {
                             estFini = true;
                             moteur.arreter();
+                            del.appliquerVertDel();
                             break;
                         }
                         dechiffrer_donnee(reprise[i], pourcentageMoteurG, pourcentageMoteurD);
@@ -264,9 +264,11 @@ int main() {
                         break;
                     }
 
-                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
-
                 }
+                if(!murDetecte) {
+                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                }
+
                 if(iterateurReprise < 1000) {
                     reprise[iterateurReprise] = combine(moteur.getPourcentageG(), moteur.getPourcentageD());
                     iterateurReprise++;
