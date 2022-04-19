@@ -63,7 +63,7 @@ AVRDUDE_PROGRAMMERID=usbasp
 #compilateur utilise
 CC=avr-gcc
 #compresseur
-CPR=ar
+CPR=avr-ar
 #pour copier le contenu d'un fichier objet vers un autre
 OBJCOPY=avr-objcopy
 #pour permettre le transfert vers le microcontroleur

@@ -9,11 +9,11 @@ uint8_t convertionHuitBits(uint16_t num){
 void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD){
     uint8_t pourcentageD; // Pourcentage PWM droite
     uint8_t pourcentageG; // Pourcentage PWM gauche
-    bool bouge = true;
 
+    lecturePhotoD = (lecturePhotoD <= 20) ? 0 : lecturePhotoD - 20;
     
     pourcentageD = (lecturePhotoG >= LIMITE_MAX) ? 100 : (lecturePhotoG - LIMITE_AMBIANTE);
-    pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD);
+    pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD - LIMITE_AMBIANTE);
 
     pourcentageD = ((uint8_t) (pourcentageD/10.0)) * 10;
     pourcentageG = ((uint8_t) (pourcentageG/10.0)) * 10;
@@ -25,6 +25,7 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
     } 
     else if (lecturePhotoG <= LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE) // Rotation en sens horaire
     {
+        PORTA &= ~(1 << PA0);
         pourcentageD = pourcentageG;
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 0, 1);
     }
@@ -35,12 +36,8 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
     else
     {
         moteur.arreter();
-        bouge = false;
     }
 
-    // if(bouge) {
-    //     _delay_ms(25);
-    // }
 }
 
 // Suivi Mur
