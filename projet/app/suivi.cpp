@@ -6,7 +6,7 @@ uint8_t convertionHuitBits(uint16_t num){
 }
 
 // Suivi Lumière
-void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD){
+void suivreLumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhotoD){
     uint8_t pourcentageD; // Pourcentage PWM droite
     uint8_t pourcentageG; // Pourcentage PWM gauche
 
@@ -18,14 +18,13 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
     pourcentageD = ((uint8_t) (pourcentageD/10.0)) * 10;
     pourcentageG = ((uint8_t) (pourcentageG/10.0)) * 10;
 
-    if(lecturePhotoD <= LIMITE_AMBIANTE && lecturePhotoG > LIMITE_AMBIANTE) // Rotation en sens antihoraire
+    if(lecturePhotoD <= LIMITE_AMBIANTE && lecturePhotoG > LIMITE_AMBIANTE + 20) // Rotation en sens antihoraire
     {
         pourcentageG = pourcentageD;
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 1, 0);
     } 
-    else if (lecturePhotoG <= LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE) // Rotation en sens horaire
+    else if (lecturePhotoG <= LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE + 20) // Rotation en sens horaire
     {
-        PORTA &= ~(1 << PA0);
         pourcentageD = pourcentageG;
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 0, 1);
     }
@@ -41,7 +40,7 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
 }
 
 // Suivi Mur
-bool suivre_mur(Moteur& moteur, uint8_t& distance){
+bool suivreMur(Moteur& moteur, uint8_t& distance){
 
     bool murDetecte = true;
 
@@ -82,14 +81,7 @@ bool suivre_mur(Moteur& moteur, uint8_t& distance){
         else{ //106
             moteur.directionPersonnalisee(10, 50, 0, 0); // S'eloigne beaucoup
         }
-        // else{
-        //     moteur.arreter(); // S'arrete si trop proche
-        //     murDetecte = false;
-        // }
     }
 
-    // if(murDetecte) {
-    //     _delay_ms(25);
-    // }
     return murDetecte;
 }

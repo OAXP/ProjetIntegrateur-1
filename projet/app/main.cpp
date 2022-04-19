@@ -22,7 +22,6 @@
 #include "memoire_24.h"
 #include "can.h"
 #include "ecrire.h"
-//#include "Timer2.h"
 
 // Constantes pour couleurs
 const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
@@ -40,9 +39,6 @@ Del del(&PORTA, PA0, PA1);
 Bouton boutonInt(&PIND, PD2);
 Bouton boutonBlanc(&PINA, PA6);
 Memoire24CXXX memoire;
-//uint8_t reprise[1000];
-//uint16_t iterateurReprise = 0;
-//Timer2 timer2; // À corriger pour respecter le constructor de la class
 
 // Variables pour Debug
 char tamponDebug[100];
@@ -54,8 +50,8 @@ char signeMoteurD = ' ';
 uint8_t lecturePhotoD; // Photorésistance droite
 uint8_t lecturePhotoG; // Photorésistance gauche
 uint8_t lectureCapteur;
-uint8_t pourcentageMoteurG = 0;
-uint8_t pourcentageMoteurD = 0;
+volatile uint8_t pourcentageMoteurG = 0;
+volatile uint8_t pourcentageMoteurD = 0;
 uint8_t distanceMurCm = 0;
 volatile uint16_t addresse = 0x0000;
 bool murDetecte;
@@ -64,8 +60,14 @@ bool murDetecte;
 ISR(TIMER1_COMPA_vect)
 {
     //ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
-    uint8_t pwm = combine(pourcentageMoteurG, pourcentageMoteurD);
-    memoire.ecriture(addresse, pwm); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
+    //uint8_t pwm = combine(pourcentageMoteurG, pourcentageMoteurD);
+    uint8_t pwmG = (moteur.getDirectionG()) ? pourcentageMoteurG + 110 : pourcentageMoteurG;
+    memoire.ecriture(addresse, pwmG); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
+    _delay_ms(5);
+    addresse++;
+
+    uint8_t pwmD = (moteur.getDirectionD()) ? pourcentageMoteurD + 110 : pourcentageMoteurD;
+    memoire.ecriture(addresse, pwmD); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
     _delay_ms(5);
     addresse++;
 }
@@ -180,63 +182,40 @@ int main() {
 
         if(estModeReprise) {
 
-            if(estFini) {
-                // Del reste verte
-            }
-            else {
+            if(!estFini) {
                 // Lire mémoire et refaire parcours
                 addresse = 0;
-                uint8_t lectureMemoire;
+                uint8_t lectureMemoireG;
+                bool directionG;
+                uint8_t lectureMemoireD;
+                bool directionD;
                 
                 while(true) {
-                    memoire.lecture(addresse, &lectureMemoire);
-                    if(lectureMemoire == 255) {
+                    memoire.lecture(addresse, &lectureMemoireG);
+                    addresse++;
+                    memoire.lecture(addresse, &lectureMemoireD);
+                    if(lectureMemoireG == 255 || lectureMemoireD == 255) {
                         estFini = true;
                         moteur.arreter();
                         del.appliquerVertDel();
                         break;
                     }
-                    dechiffrer_donnee(lectureMemoire, pourcentageMoteurG, pourcentageMoteurD);
-                    moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, 0, 0);
+                    pourcentageMoteurG = (lectureMemoireG > 100) ? lectureMemoireG - 110 : lectureMemoireG;
+                    directionG = (lectureMemoireG > 100);
+                    pourcentageMoteurD = (lectureMemoireD > 100) ? lectureMemoireD - 110 : lectureMemoireD;
+                    directionD = (lectureMemoireD > 100);
+                    moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, directionG, directionD);
                     _delay_ms(100);
                     addresse++;
-
-                    /*for (uint16_t i = 0; i < 1000; i++)
-                    {
-                        memoire.lecture(addresse, &lectureMemoire);
-                        addresse++;
-                        _delay_ms(5);
-                        if(lectureMemoire == 255) {
-                            reprise[i] = 255;
-                            break;
-                        }
-                        reprise[i] = lectureMemoire;
-                    }
-
-                    for (uint16_t i = 0; i < 1000; i++)
-                    {
-                        if(reprise[i] == 255) {
-                            estFini = true;
-                            moteur.arreter();
-                            del.appliquerVertDel();
-                            break;
-                        }
-                        dechiffrer_donnee(reprise[i], pourcentageMoteurG, pourcentageMoteurD);
-                        moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, 0, 0);
-                        _delay_ms(100);
-                    }*/
                 }
             }
 
         } 
         else {
 
-            if(estFini) {
-                // À voir
-            }
-            else {
+            if(!estFini) {
 
-                murDetecte = suivre_mur(moteur, lectureCapteur);
+                murDetecte = suivreMur(moteur, lectureCapteur);
 
                 if(estArrete) {
 
@@ -244,8 +223,7 @@ int main() {
 
                         // Parcours à enregistrer terminé
                         arreterMinuterie1();
-                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
-                        //reprise[iterateurReprise] = 255;
+                        indiquerFinMemoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
 
                         _delay_ms(1000); // Robot ne fait rien pendant 1 sec
 
@@ -259,17 +237,7 @@ int main() {
                         del.appliquerRougeDel();
                         // Processus à effectuer
                         arreterMinuterie1();
-                        indiquer_fin_memoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
-                        /*reprise[iterateurReprise] = 255;
-                        addresse = 0;
-                        for (uint16_t i = 0; i < 1000; i++)
-                        {
-                            memoire.ecriture(addresse, reprise[i]);
-                            if(reprise[i] == 255){
-                                break;
-                            }
-                            addresse++;
-                        }*/
+                        indiquerFinMemoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
                         
                         del.appliquerVertDel(); // Pour indiquer que la fin
                         break;
@@ -277,16 +245,9 @@ int main() {
 
                 }
                 if(!murDetecte) {
-                    suivre_lumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
+                    suivreLumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
                 }
-                /*
-                if(iterateurReprise < 1000) {
-                    reprise[iterateurReprise] = combine(moteur.getPourcentageG(), moteur.getPourcentageD());
-                    iterateurReprise++;
-                }*/
                 _delay_ms(15);
-                // ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
-                // _delay_ms(25.6);
                 
             }
 
