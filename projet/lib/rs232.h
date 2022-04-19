@@ -5,6 +5,8 @@
  * @date 2022-03-12
  * 
  */
+
+#define F_CPU 8000000
 #include <avr/io.h>
 
 class Rs232{

@@ -14,7 +14,6 @@
 void Interruption::initInt0() {
     // cli est une routine qui bloque toutes les interruptions.
     cli ();
-
     // cette procédure ajuste le registre EIMSK
     // de l’ATmega324PA pour permettre les interruptions externes
     EIMSK |= (1 << INT0) ;

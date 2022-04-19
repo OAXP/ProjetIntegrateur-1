@@ -13,7 +13,7 @@ void suivre_lumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhot
 
     
     pourcentageD = (lecturePhotoG >= LIMITE_MAX) ? 100 : (lecturePhotoG - LIMITE_AMBIANTE);
-    pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD - LIMITE_AMBIANTE);
+    pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD);
 
     pourcentageD = ((uint8_t) (pourcentageD/10.0)) * 10;
     pourcentageG = ((uint8_t) (pourcentageG/10.0)) * 10;
