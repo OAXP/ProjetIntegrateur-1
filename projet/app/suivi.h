@@ -1,3 +1,13 @@
+/**
+ * @file suivi.h
+ * @author Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
+ * @brief Ce fichier gère les suivi de lumière et de mur.
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #define F_CPU 8000000
 
 #include <avr/io.h>
@@ -12,6 +22,7 @@ void suivreLumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhoto
 
 const uint8_t LIMITE_AMBIANTE = 120; // Limite pour lumière ambiante
 const uint8_t LIMITE_MAX = LIMITE_AMBIANTE + 100; // Limite pour la lumière max
+const uint8_t CORRECTION_PHOTO = 20; // Correction pour les photorésistance
 
 // Suivi Mur
 bool suivreMur(Moteur& moteur, uint8_t& distance);

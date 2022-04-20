@@ -1,0 +1,26 @@
+Auteurs du projet : Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
+
+Il est important de savoir que des valeurs ont été mises ainsi pour s'adapter aux roues de notre robot qui ne vont pas à la même vitesse.
+Il y a quelques warnings, mais ça ne vient pas de notre code, ça vient du code donné par l'école (mémoire).
+Il y a des fonctions que nous n'utilisons plus, mais on a décidé de les garder si on voulais faire des changements.
+Nous n'avons pas utilisé les classes Timer, car nous avons décidé que c'est plutôt différent pour chaque cas d'utilisation.
+Nous les (classes Timer) avons tout de même pas supprimé dans la libraire, au besoin.
+
+Voici les branchements à faire pour notre projet :
+
+    DEL libre (-)             - PA0
+    DEL libre (+)             - PA1
+
+    Capteur infrarouge        - PA2
+
+    Photorésistance de droite - PA3
+    Photorésistance de gauche - PA5
+
+    Bouton Blanc              - PA6
+    Bouton Interrupt          - PD2
+
+    Moteur gauche (direction) - PB2
+    Moteur droit  (direction) - PB5
+
+    Moteur gauche (PWM)       - PB3
+    Moteur droit  (PWM)       - PB4

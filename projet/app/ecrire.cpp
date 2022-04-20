@@ -1,3 +1,13 @@
+/**
+ * @file ecrire.cpp
+ * @author Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
+ * @brief Ce fichier gère les écritures mémoire.
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include "ecrire.h"
 
 uint8_t combine(uint8_t pourcentageMoteurG, uint8_t pourcentageMoteurD) { //combiner pourcentageD et pourcentageG en un uint8_t
@@ -20,6 +30,6 @@ void ecrireMemoire(Memoire24CXXX& memoire, uint8_t pourcentageMoteurG, uint8_t p
 
 void indiquerFinMemoire(Memoire24CXXX& memoire, volatile uint16_t& addresse) {
     // On a décidé que la valeur indiquant la fin serait 255 (1111 1111);
-    memoire.ecriture(addresse, 255);
+    memoire.ecriture(addresse, VALEUR_FIN);
     addresse++;
 }

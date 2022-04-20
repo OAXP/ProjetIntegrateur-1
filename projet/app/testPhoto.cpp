@@ -1,7 +1,7 @@
 /**
- * @file main.cpp
+ * @file testPhoto.cpp
  * @author Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
- * @brief Ce fichier écrit est le main.
+ * @brief Ce fichier (non utilisé, à part pour tests) est un fichier test pour les photorésistances.
  * @date 2022-04-07
  * 
  * @copyright Copyright (c) 2022

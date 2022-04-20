@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @author Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
- * @brief Ce fichier écrit est le main.
+ * @brief Ce fichier gère tout le fonctionnement du robot et lie les classes entres elles.
  * @date 2022-04-07
  * 
  * @copyright Copyright (c) 2022
@@ -23,14 +23,17 @@
 #include "can.h"
 #include "ecrire.h"
 
-// Constantes pour couleurs
-const uint8_t ETEINT = 0x00;   // 0b00000000 Aucun courant pour aucune lumière
-const uint8_t ROUGE = 0x02;    // 0b00000010 Courant sur A1 pour avoir du Rouge
-const uint8_t VERT = 0x01;     // 0b00000001 Courant sur A0 pour avoir du VERT
+// Constantes de couleurs
 const uint8_t DELAI_AMBRE = 3; // Délai en ms pour avoir la couleur ambre
 
 // Clignotement de DEL à 5Hz pour 3 secondes
 const uint8_t DELAI_CLIGNOTANT = 100; // 100ms vient de la période (200ms) divisée par 2
+
+// Constantes en rapport avec la mémoire et le suivi
+const uint8_t DELAI_MEMOIRE = 100;
+const uint16_t DELAI_ECRITURE = 781;
+const uint8_t DELAI_SUIVI = 15;
+const uint8_t INDICE_DIRECTION = 110;
 
 // Classes utilisées
 Moteur moteur;
@@ -57,17 +60,19 @@ volatile uint16_t addresse = 0x0000;
 bool murDetecte;
 
 
+// Début partie écriture en mémoire
 ISR(TIMER1_COMPA_vect)
 {
-    //ecrire_memoire(memoire, moteur.getPourcentageG(), moteur.getPourcentageD(), addresse);
-    //uint8_t pwm = combine(pourcentageMoteurG, pourcentageMoteurD);
-    uint8_t pwmG = (moteur.getDirectionG()) ? pourcentageMoteurG + 110 : pourcentageMoteurG;
-    memoire.ecriture(addresse, pwmG); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
+    // Écriture en mémoire du PWM gauche puis droit
+    // Le +110 indique que le PWM est dans la direction arrière
+
+    uint8_t pwmG = (moteur.getDirectionG()) ? pourcentageMoteurG + INDICE_DIRECTION : pourcentageMoteurG;
+    memoire.ecriture(addresse, pwmG); // addresse: (8bit) pourcentageMoteurG
     _delay_ms(5);
     addresse++;
 
-    uint8_t pwmD = (moteur.getDirectionD()) ? pourcentageMoteurD + 110 : pourcentageMoteurD;
-    memoire.ecriture(addresse, pwmD); // addresse: (8bit) pourcentageMoteurG/10 | pourcentageMoteurD/10
+    uint8_t pwmD = (moteur.getDirectionD()) ? pourcentageMoteurD + INDICE_DIRECTION : pourcentageMoteurD;
+    memoire.ecriture(addresse, pwmD); // addresse: (8bit) pourcentageMoteurD/10
     _delay_ms(5);
     addresse++;
 }
@@ -95,7 +100,9 @@ void arreterMinuterie1 () {
     OCR1A = 0;
     sei();
 }
+// Fin partie écriture en mémoire
 
+// Clignotement de DEL 3 secondes
 void clignoterDel(Del& del, bool estRouge) {
 
     // 15 itérations, car 3000ms / 200ms = 15
@@ -113,8 +120,11 @@ void clignoterDel(Del& del, bool estRouge) {
     
 }
 
+// Effectue un demi tour puis suit le mur
 void effectuerDemiTour() {
+
     moteur.directionPersonnalisee(100,55,0,0);
+
     for (int i = 0; i < 500; i++)
     {
         del.appliquerRougeDel();
@@ -122,13 +132,14 @@ void effectuerDemiTour() {
         del.appliquerVertDel();
         _delay_ms(DELAI_AMBRE);
     }
+
     moteur.arreter();
     del.appliquerEteintDel();
 }
 
 
 int main() {
-    // Réglage des entrées/sorties
+    // Réglage des entrées/sorties pour Photorésistances et Capteur infrarouge
     DDRA &= ~(1 << PA2 | 1 << PA3 | 1 << PA5);
 
     // Variables de fonctionnement du robot
@@ -137,6 +148,7 @@ int main() {
     bool estArrete = true;
 
 
+    // Choix du mode parcours ou reprise
     while (true)
     {
         if(boutonBlanc.getEtat() == Bouton::Etat::RELACHE){
@@ -148,11 +160,12 @@ int main() {
         if(boutonInt.getEtat() == Bouton::Etat::RELACHE){
             clignoterDel(del, false); // mode parcours
             estModeReprise = false;
-            partirMinuterie1(781); //ctc, écriture chaque ~100ms
+            partirMinuterie1(DELAI_ECRITURE); //ctc, écriture chaque ~100ms
             break;
         }
     }
 
+    // Débugage et traitement du mode choisi
     while(true) {
         
          // Lecture des moteurs
@@ -194,18 +207,27 @@ int main() {
                     memoire.lecture(addresse, &lectureMemoireG);
                     addresse++;
                     memoire.lecture(addresse, &lectureMemoireD);
-                    if(lectureMemoireG == 255 || lectureMemoireD == 255) {
+
+                    if(lectureMemoireG == VALEUR_FIN || lectureMemoireD == VALEUR_FIN) {
                         estFini = true;
                         moteur.arreter();
                         del.appliquerVertDel();
                         break;
                     }
-                    pourcentageMoteurG = (lectureMemoireG > 100) ? lectureMemoireG - 110 : lectureMemoireG;
+
+                    // Traite les valeurs pour les roues
+                    pourcentageMoteurG = (lectureMemoireG > 100) ? lectureMemoireG - INDICE_DIRECTION : lectureMemoireG;
                     directionG = (lectureMemoireG > 100);
-                    pourcentageMoteurD = (lectureMemoireD > 100) ? lectureMemoireD - 110 : lectureMemoireD;
+
+                    pourcentageMoteurD = (lectureMemoireD > 100) ? lectureMemoireD - INDICE_DIRECTION : lectureMemoireD;
                     directionD = (lectureMemoireD > 100);
+
+                    // Applique les pourcentages et la direction de chaque roue
                     moteur.directionPersonnalisee(pourcentageMoteurG, pourcentageMoteurD, directionG, directionD);
-                    _delay_ms(100);
+
+                    // Délai pour aller avec la mémoire
+                    _delay_ms(DELAI_MEMOIRE);
+
                     addresse++;
                 }
             }
@@ -235,7 +257,7 @@ int main() {
                         estFini = true;
 
                         del.appliquerRougeDel();
-                        // Processus à effectuer
+
                         arreterMinuterie1();
                         indiquerFinMemoire(memoire, addresse); // Indiquer dans la mémoire la fin de l'enregistrement
                         
@@ -247,7 +269,9 @@ int main() {
                 if(!murDetecte) {
                     suivreLumiere(moteur, lecturePhotoG, lecturePhotoD); // Si ça bouge déjà avec le Mur, ne pas faire ça
                 }
-                _delay_ms(15);
+                
+                // Délai entre chaque suivi
+                _delay_ms(DELAI_SUIVI);
                 
             }
 

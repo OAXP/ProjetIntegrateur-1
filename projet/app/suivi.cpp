@@ -1,3 +1,13 @@
+/**
+ * @file suivi.cpp
+ * @author Anas Barbouch, Andy Tran, Ryan Kezouh, Ilias Bakhbukh
+ * @brief Ce fichier gère les suivi de lumière et de mur.
+ * @date 2022-04-07
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include "suivi.h"
 
 uint8_t convertionHuitBits(uint16_t num){
@@ -10,29 +20,33 @@ void suivreLumiere(Moteur& moteur, uint8_t& lecturePhotoG, uint8_t& lecturePhoto
     uint8_t pourcentageD; // Pourcentage PWM droite
     uint8_t pourcentageG; // Pourcentage PWM gauche
 
-    lecturePhotoD = (lecturePhotoD <= 20) ? 0 : lecturePhotoD - 20;
+    // La photorésistance a l'air plus sensible que la gauche, donc nous avons ajouté cette correction
+    lecturePhotoD = (lecturePhotoD <= CORRECTION_PHOTO) ? 0 : lecturePhotoD - CORRECTION_PHOTO;
     
+    // Créer un pourcentage PWM à partir de la valeur obtenue
     pourcentageD = (lecturePhotoG >= LIMITE_MAX) ? 100 : (lecturePhotoG - LIMITE_AMBIANTE);
     pourcentageG = (lecturePhotoD >= LIMITE_MAX) ? 100 : (lecturePhotoD - LIMITE_AMBIANTE);
 
+    // Ces deux lignes ont été ajoutées pour une des méthodes utilisée pour la mémoire
     pourcentageD = ((uint8_t) (pourcentageD/10.0)) * 10;
     pourcentageG = ((uint8_t) (pourcentageG/10.0)) * 10;
 
-    if(lecturePhotoD <= LIMITE_AMBIANTE && lecturePhotoG > LIMITE_AMBIANTE + 20) // Rotation en sens antihoraire
+    // Traitement des valeurs reçues
+    if(lecturePhotoD <= LIMITE_AMBIANTE && lecturePhotoG > LIMITE_AMBIANTE + CORRECTION_PHOTO) // Rotation en sens antihoraire
     {
         pourcentageG = pourcentageD;
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 1, 0);
     } 
-    else if (lecturePhotoG <= LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE + 20) // Rotation en sens horaire
+    else if (lecturePhotoG <= LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE + CORRECTION_PHOTO) // Rotation en sens horaire
     {
         pourcentageD = pourcentageG;
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 0, 1);
     }
-    else if (lecturePhotoG > LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE)
+    else if (lecturePhotoG > LIMITE_AMBIANTE && lecturePhotoD > LIMITE_AMBIANTE) // Avancer par rapport à la lumière
     {
         moteur.directionPersonnalisee(pourcentageG, pourcentageD, 0, 0);
     }
-    else
+    else // Arrêter tout
     {
         moteur.arreter();
     }
