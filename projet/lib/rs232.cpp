@@ -6,7 +6,6 @@
  * 
  */
 #include "rs232.h"
-#include <avr/delay.h>
 
 Rs232::Rs232(){
     // 2400 bauds. Nous vous donnons la valeur des deux
